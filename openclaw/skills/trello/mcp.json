@@ -1,0 +1,22 @@
+{
+    "mcpServers": {
+        "trello-events": {
+           "command": "npx",
+           "args": ["-y", "@Hint-Services/mcp-trello"],
+           "env": {
+              "trelloApiKey": "<API Key Sourced from Trello>",
+              "trelloToken": "<Trello API Token sourced from Trello>",
+              "trelloBoardId": "<Trello Board ID sourced from Trello Board URL.json>"
+           }
+        },
+        "trello-applications": {
+           "command": "npx",
+           "args": ["-y", "@Hint-Services/mcp-trello"],
+           "env": {
+              "trelloApiKey": "<API Key Sourced from Trello>",
+              "trelloToken": "<Trello API Token sourced from Trello>",
+              "trelloBoardId": "<Trello Board ID sourced from Trello Board URL.json>"
+           }
+        }
+    }
+}
