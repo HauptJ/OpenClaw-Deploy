@@ -16,7 +16,7 @@ Infrastructure-as-code and configuration repository for deploying an [OpenClaw](
 └── openclaw/
     ├── openclaw.json           # OpenClaw runtime configuration (agent, gateway, tools, auth)
     └── skills/
-        ├── email/              # Email MCP integration (SMTP/IMAP)
+        ├── gmail/              # Gmail read/compose integration via MCP
         │   ├── SKILL.md
         │   └── mcp.json
         └── trello/             # Trello MCP integration (events + applications boards)
