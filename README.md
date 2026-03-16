@@ -117,21 +117,25 @@ Skills live in the OpenClaw skills directory (typically `~/.openclaw/skills/<ski
 
 | Skill | Description |
 |---|---|
-| `gmail` | Gmail read/compose integration via the `shinzo-labs/gmail-mcp` MCP server |
+| `email` | Email send/read integration via the Email MCP server (SMTP/IMAP) |
 | `trello` | Dual-board Trello integration (events board + applications board) via the `mcp-trello` MCP server |
-
+gi
 ### MCP Integrations
 
 Each MCP skill ships with an `mcp.json` that must be populated with real credentials **only on the target host** — never in version control. Placeholder values are used in all committed files.
 
-#### Gmail (`shinzo-labs/gmail-mcp`)
+#### Email MCP server
 
-Invocation via `npx`. Requires a Google Cloud OAuth2 client:
+Invocation via `uvx`. Requires SMTP/IMAP credentials:
 
 ```json
 {
-  "CLIENT_ID": "<your-client-id>.apps.googleusercontent.com",
-  "CLIENT_SECRET": "<your-client-secret>"
+  "SMTP_HOST": "<your-smtp-host>",
+  "SMTP_PORT": "<your-smtp-port>",
+  "IMAP_HOST": "<your-imap-host>",
+  "IMAP_PORT": "<your-imap-port>",
+  "EMAIL_USER": "<your-email-address>",
+  "EMAIL_PASSWORD": "<your-password>"
 }
 ```
 
