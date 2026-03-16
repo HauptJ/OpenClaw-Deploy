@@ -83,8 +83,11 @@ resource "openstack_compute_instance_v2" "vm" {
       "sudo add-apt-repository --yes --update ppa:ansible/ansible",
       "sudo apt-get install -y ansible",
 
-      # ── Install git and vim ────────────────────────────────────────────
-      "sudo apt-get install -y git vim",
+      # ── Install git and vim and snap and jq─────────────────────────────
+      "sudo apt-get install -y git vim snapd jq",
+
+      # ── AWS CLI with snap ──────────────────────────────────────────────
+      "sudo snap install aws-cli --classic",
 
       # ── Clone the OpenClaw installer ───────────────────────────────────
       "git clone https://github.com/openclaw/openclaw-ansible.git",
@@ -92,16 +95,11 @@ resource "openstack_compute_instance_v2" "vm" {
       # ── CD into the OpenClaw Ansible directory ─────────────────────────
       "cd openclaw-ansible",
 
-      # Install in development mode
-      "ansible-playbook playbook.yml",
+      # ── Install OpenClaw ───────────────────────────────────────────────
+      "echo 'openclaw_ssh_keys:\n - ${file(var.ssh_public_key_path)}' > vars.yml",
 
-
-      # ── Verify installations ───────────────────────────────────────────
-      "echo '--- Installed versions ---'",
-      "ansible --version | head -1",
-      "git  --version",
-      "vim  --version | head -1",
-      "echo '--- Provisioning complete ---'",
+      # ── Install OpenClaw ───────────────────────────────────────────────
+      "sudo ansible-playbook playbook.yml -e @vars.yml",
     ]
   }
 

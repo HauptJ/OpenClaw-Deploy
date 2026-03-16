@@ -1,21 +1,52 @@
-{
+{  "secrets": {
+    "providers": {
+      "aws_trello": {
+        "source": "exec",
+        "command": "/home/openclaw/.openclaw/get_aws_secret.sh",
+        "args": ["dev/openclaw/trello"],
+        "jsonOnly": false
+      },
+      "aws_trello_key": {
+        "source": "exec",
+        "command": "/home/openclaw/.openclaw/get_aws_secret.sh",
+        "args": ["dev/openclaw/trello_key"],
+        "jsonOnly": false
+      }
+    }
+  },
     "mcpServers": {
         "trello-events": {
            "command": "npx",
            "args": ["-y", "@Hint-Services/mcp-trello"],
            "env": {
-              "trelloApiKey": "<API Key Sourced from Trello>",
-              "trelloToken": "<Trello API Token sourced from Trello>",
-              "trelloBoardId": "<Trello Board ID sourced from Trello Board URL.json>"
+             "trelloApiKey": { 
+                  "source": "exec", 
+                  "provider": "aws_trello_key", 
+                  "id": "value" 
+               },
+               "trelloToken": { 
+                  "source": "exec", 
+                  "provider": "aws_trello", 
+                  "id": "value" 
+               },
+              "trelloBoardId": "69b04d8f9d99c7b928208e71"
            }
         },
         "trello-applications": {
            "command": "npx",
            "args": ["-y", "@Hint-Services/mcp-trello"],
            "env": {
-              "trelloApiKey": "<API Key Sourced from Trello>",
-              "trelloToken": "<Trello API Token sourced from Trello>",
-              "trelloBoardId": "<Trello Board ID sourced from Trello Board URL.json>"
+              "trelloApiKey": { 
+                  "source": "exec", 
+                  "provider": "aws_trello_key", 
+                  "id": "value" 
+               },
+              "trelloToken": { 
+                  "source": "exec", 
+                  "provider": "aws_trello", 
+                  "id": "value" 
+               },
+              "trelloBoardId": "69b04bfd36a60adc998e8840"
            }
         }
     }
