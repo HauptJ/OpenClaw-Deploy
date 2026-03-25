@@ -70,36 +70,57 @@ resource "openstack_compute_instance_v2" "vm" {
 
   provisioner "remote-exec" {
     inline = [
-      # ── Wait for cloud-init to finish ──────────────────────────────────
+      # Wait for cloud-init to finish 
       "cloud-init status --wait || true",
 
-      # ── Refresh package index ──────────────────────────────────────────
+      # Refresh package index 
       "sudo apt-get update -y",
 
-      # ── Install prerequisites ──────────────────────────────────────────
+      # Install prerequisites 
       "sudo apt-get install -y software-properties-common",
 
-      # ── Add Ansible PPA and install ────────────────────────────────────
+      # Add Ansible PPA and install 
       "sudo add-apt-repository --yes --update ppa:ansible/ansible",
       "sudo apt-get install -y ansible",
 
-      # ── Install git and vim and snap and jq─────────────────────────────
+      # Install git and vim and snap and jq
       "sudo apt-get install -y git vim snapd jq",
 
-      # ── AWS CLI with snap ──────────────────────────────────────────────
+      # AWS CLI with snap
       "sudo snap install aws-cli --classic",
 
-      # ── Clone the OpenClaw installer ───────────────────────────────────
+      # Clone the OpenClaw installer 
       "git clone https://github.com/openclaw/openclaw-ansible.git",
       
-      # ── CD into the OpenClaw Ansible directory ─────────────────────────
+      # CD into the OpenClaw Ansible directory 
       "cd openclaw-ansible",
 
-      # ── Install OpenClaw ───────────────────────────────────────────────
+      # Install OpenClaw 
       "echo 'openclaw_ssh_keys:\n - ${file(var.ssh_public_key_path)}' > vars.yml",
 
-      # ── Install OpenClaw ───────────────────────────────────────────────
+      # Install OpenClaw 
       "sudo ansible-playbook playbook.yml -e @vars.yml",
+
+      # Make OpenClaw scripts directory
+      "sudo mkdir -p /home/openclaw/.openclaw/scripts",
+
+      # Download Get AWS Secret script
+      "sudo curl -L -o /home/openclaw/.openclaw/scripts/get_aws_secret.sh https://gist.githubusercontent.com/HauptJ/107023f40e22a3c536ad8a3f80065fe0/raw/aed782e81503d6b9ff89e90c9fa96268a9c41ab7/get_aws_secret.sh",
+
+      # Download Fill MCP Secret script
+      "sudo curl -L -o /home/openclaw/.openclaw/scripts/fill_mcp_secrets.sh https://gist.githubusercontent.com/HauptJ/0ad93f015ac6ee9f514657dfea3778cc/raw/d75ae2aca27c92a23a9b97837d158ad41ae3b61f/fill_mcp_secrets.sh",
+
+      # Download uv_install script
+      "sudo curl -L -o /home/openclaw/.openclaw/scripts/uv_install.sh https://astral.sh/uv/install.sh",
+
+      # set script permissions
+      "sudo chown -R openclaw:openclaw /home/openclaw/.openclaw/scripts",
+
+      # set permissions for scripts
+      "sudo chmod -R 711 /home/openclaw/.openclaw/scripts",
+
+      # execute uv_install as openclaw user
+      "sudo /bin/su -c '/home/openclaw/.openclaw/scripts/uv_install.sh' - openclaw",
     ]
   }
 
