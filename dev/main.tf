@@ -112,12 +112,6 @@ resource "openstack_compute_instance_v2" "vm" {
       # Make OpenClaw scripts directory
       "sudo mkdir -p /home/openclaw/.openclaw/scripts",
 
-      # Download Get AWS Secret script
-      "sudo curl -L -o /home/openclaw/.openclaw/scripts/get_aws_secret.sh https://gist.githubusercontent.com/HauptJ/107023f40e22a3c536ad8a3f80065fe0/raw/aed782e81503d6b9ff89e90c9fa96268a9c41ab7/get_aws_secret.sh",
-
-      # Download Fill MCP Secret script
-      "sudo curl -L -o /home/openclaw/.openclaw/scripts/fill_mcp_secrets.sh https://gist.githubusercontent.com/HauptJ/0ad93f015ac6ee9f514657dfea3778cc/raw/d75ae2aca27c92a23a9b97837d158ad41ae3b61f/fill_mcp_secrets.sh",
-
       # Download uv_install script
       "sudo curl -L -o /home/openclaw/.openclaw/scripts/uv_install.sh https://astral.sh/uv/install.sh",
 
@@ -129,6 +123,26 @@ resource "openstack_compute_instance_v2" "vm" {
 
       # execute uv_install as openclaw user
       "sudo /bin/su -c '/home/openclaw/.openclaw/scripts/uv_install.sh' - openclaw",
+    ]
+  }
+
+  provisioner "file" {
+    source      = "scripts/get_aws_secret.sh"
+    destination = "/home/openclaw/.openclaw/scripts/get_aws_secret.sh"
+  }
+
+  provisioner "file" {
+    source      = "scripts/fill_mcp_secrets.sh"
+    destination = "/home/openclaw/.openclaw/scripts/fill_mcp_secrets.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      # set script permissions
+      "sudo chown -R openclaw:openclaw /home/openclaw/.openclaw/scripts",
+
+      # set permissions for scripts
+      "sudo chmod -R 711 /home/openclaw/.openclaw/scripts",
     ]
   }
 
