@@ -1,0 +1,37 @@
+{
+  "mcpServers": {
+    "zerolib-email": {
+      "command": "uvx",
+      "args": ["mcp-email-server@latest", "stdio"],
+      "env": {
+        "MCP_EMAIL_SERVER_ACCOUNT_NAME": "Joshua",
+        "MCP_EMAIL_SERVER_FULL_NAME": "Joshua Haupt OpenClaw",
+        "MCP_EMAIL_SERVER_EMAIL_ADDRESS": "someemail@jnh.dev",
+        "MCP_EMAIL_SERVER_USER_NAME": "someemail@jnh.dev",
+        "MCP_EMAIL_SERVER_PASSWORD": "${dev/OpenClaw/Email}",
+        "MCP_EMAIL_SERVER_IMAP_HOST": "mail.privateemail.com",
+        "MCP_EMAIL_SERVER_IMAP_PORT": "993",
+        "MCP_EMAIL_SERVER_SMTP_HOST": "mail.privateemail.com",
+        "MCP_EMAIL_SERVER_SMTP_PORT": "465"
+      }
+    },
+    "trello-events": {
+      "command": "npx",
+      "args": ["-y", "@Hint-Services/mcp-trello"],
+      "env": {
+        "trelloApiKey": "${dev/openclaw/trello_key}",
+        "trelloToken": "${dev/openclaw/trello}",
+        "trelloBoardId": "sometrelloboardid"
+      }
+    },
+    "trello-applications": {
+      "command": "npx",
+        "args": ["-y", "@Hint-Services/mcp-trello"],
+        "env": {
+        "trelloApiKey": "${dev/openclaw/trello_key}",
+        "trelloToken": "${dev/openclaw/trello}",
+        "trelloBoardId": "sometrelloboardid"
+      }
+    }
+  }
+}

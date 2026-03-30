@@ -70,36 +70,79 @@ resource "openstack_compute_instance_v2" "vm" {
 
   provisioner "remote-exec" {
     inline = [
-      # ── Wait for cloud-init to finish ──────────────────────────────────
+      # Wait for cloud-init to finish 
       "cloud-init status --wait || true",
 
-      # ── Refresh package index ──────────────────────────────────────────
+      # Refresh package index 
       "sudo apt-get update -y",
 
-      # ── Install prerequisites ──────────────────────────────────────────
+      # Install prerequisites 
       "sudo apt-get install -y software-properties-common",
 
-      # ── Add Ansible PPA and install ────────────────────────────────────
+      # Add Ansible PPA
       "sudo add-apt-repository --yes --update ppa:ansible/ansible",
+
+      # Refresh package index 
+      "sudo apt-get update -y",
+
+      # Install Ansible
       "sudo apt-get install -y ansible",
 
-      # ── Install git and vim and snap and jq─────────────────────────────
+      # Install git and vim and snap and jq
       "sudo apt-get install -y git vim snapd jq",
 
-      # ── AWS CLI with snap ──────────────────────────────────────────────
+      # AWS CLI with snap
       "sudo snap install aws-cli --classic",
 
-      # ── Clone the OpenClaw installer ───────────────────────────────────
+      # Clone the OpenClaw installer 
       "git clone https://github.com/openclaw/openclaw-ansible.git",
+
+      # Refresh package index 
+      "sudo apt-get update -y",
       
-      # ── CD into the OpenClaw Ansible directory ─────────────────────────
+      # CD into the OpenClaw Ansible directory 
       "cd openclaw-ansible",
 
-      # ── Install OpenClaw ───────────────────────────────────────────────
+      # Install OpenClaw 
       "echo 'openclaw_ssh_keys:\n - ${file(var.ssh_public_key_path)}' > vars.yml",
 
-      # ── Install OpenClaw ───────────────────────────────────────────────
+      # Install OpenClaw 
       "sudo ansible-playbook playbook.yml -e @vars.yml",
+
+      # Make OpenClaw scripts directory
+      "sudo mkdir -p /home/openclaw/.openclaw/scripts",
+
+      # Download uv_install script
+      "sudo curl -L -o /home/openclaw/.openclaw/scripts/uv_install.sh https://astral.sh/uv/install.sh",
+
+      # set script permissions
+      "sudo chown -R openclaw:openclaw /home/openclaw/.openclaw/scripts",
+
+      # set permissions for scripts
+      "sudo chmod -R 711 /home/openclaw/.openclaw/scripts",
+
+      # execute uv_install as openclaw user
+      "sudo /bin/su -c '/home/openclaw/.openclaw/scripts/uv_install.sh' - openclaw",
+    ]
+  }
+
+  provisioner "file" {
+    source      = "scripts/get_aws_secret.sh"
+    destination = "/home/openclaw/.openclaw/scripts/get_aws_secret.sh"
+  }
+
+  provisioner "file" {
+    source      = "scripts/fill_mcp_secrets.sh"
+    destination = "/home/openclaw/.openclaw/scripts/fill_mcp_secrets.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      # set script permissions
+      "sudo chown -R openclaw:openclaw /home/openclaw/.openclaw/scripts",
+
+      # set permissions for scripts
+      "sudo chmod -R 711 /home/openclaw/.openclaw/scripts",
     ]
   }
 
