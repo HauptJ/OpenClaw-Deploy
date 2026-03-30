@@ -79,8 +79,13 @@ resource "openstack_compute_instance_v2" "vm" {
       # Install prerequisites 
       "sudo apt-get install -y software-properties-common",
 
-      # Add Ansible PPA and install 
+      # Add Ansible PPA
       "sudo add-apt-repository --yes --update ppa:ansible/ansible",
+
+      # Refresh package index 
+      "sudo apt-get update -y",
+
+      # Install Ansible
       "sudo apt-get install -y ansible",
 
       # Install git and vim and snap and jq
@@ -91,6 +96,9 @@ resource "openstack_compute_instance_v2" "vm" {
 
       # Clone the OpenClaw installer 
       "git clone https://github.com/openclaw/openclaw-ansible.git",
+
+      # Refresh package index 
+      "sudo apt-get update -y",
       
       # CD into the OpenClaw Ansible directory 
       "cd openclaw-ansible",
